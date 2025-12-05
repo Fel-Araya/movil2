@@ -1,13 +1,21 @@
-# Usa la imagen oficial de Eclipse Temurin con JDK 21 y Alpine
 FROM eclipse-temurin:21-jdk-alpine
 
-# Crea y cambia al directorio de la app
+RUN apk add --no-cache bash
+
 WORKDIR /app
 
-# Copia todo el código al contenedor
+# Copia los archivos de Gradle y el wrapper
+COPY build.gradle settings.gradle gradlew ./
+COPY gradle ./gradle
+RUN chmod +x gradlew
+
+# Descarga dependencias (cacheable)
+RUN ./gradlew build -x test --dry-run
+
+# Copia todo el código
 COPY . ./
 
-# Construye la app con Gradle, saltando tests
+# Build final
 RUN ./gradlew clean build -x test
 
 # Ejecuta la app
