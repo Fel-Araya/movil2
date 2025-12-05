@@ -1,9 +1,4 @@
-[build]
-builder = "maven"
-
-[build.args]
-GOOGLE_RUNTIME_VERSION = "17"
-
 [deploy]
-start = "java -jar target/miapp-0.0.1-SNAPSHOT.jar"
+# Railway detectará Dockerfile, así que no es necesario un builder
+start = "java -jar build/libs/njdemo-0.0.1-SNAPSHOT.jar"
 root = "."
