@@ -6,10 +6,13 @@ import lombok.*;
 import java.util.Date;
 import java.util.List;
 
+import com.example.miapp.model.Producto;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "boletas")
 public class Boleta {
 
     @Id

@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoletaRepository extends JpaRepository<Boleta, Long> {
-    // Métodos CRUD ya incluidos: save, findAll, findById, deleteById
 }
