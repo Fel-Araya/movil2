@@ -1,35 +1,36 @@
-# Usa Maven + JDK 17 Alpine para build
+# ===== Etapa 1: Build del JAR usando Maven + JDK 17 =====
 FROM maven:3.9.4-eclipse-temurin-17-alpine AS build
 
+# Carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copia archivos de configuración de Maven
-COPY pom.xml ./ 
+# Copia el pom.xml y la configuración de Maven primero (para cachear dependencias)
+COPY pom.xml ./
 COPY .mvn ./.mvn
 
 # Copia wrapper si lo tienes
-COPY mvnw ./ 
+COPY mvnw ./
 RUN chmod +x mvnw
 
-# Descarga dependencias
+# Descarga dependencias (offline, cacheable)
 RUN mvn dependency:go-offline
 
 # Copia el código fuente
 COPY src ./src
 
-# Build final sin tests
+# Build del JAR sin tests
 RUN mvn clean package -DskipTests
 
-# Imagen final para correr el JAR
+# ===== Etapa 2: Imagen final para ejecutar el JAR =====
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 
-# Copia el JAR generado
+# Copia el JAR generado desde la etapa de build
 COPY --from=build /app/target/miapp-0.0.1-SNAPSHOT.jar ./miapp.jar
 
-# Expone el puerto de Spring Boot
+# Expone el puerto que Spring Boot va a usar
 EXPOSE 8080
 
-# Ejecuta la app usando el puerto asignado por Railway
+# Ejecuta la app usando el puerto dinámico de Railway
 CMD ["sh", "-c", "java -jar miapp.jar --server.port=$PORT"]
