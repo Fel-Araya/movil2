@@ -23,19 +23,17 @@ public class BoletaController {
     @Autowired
     private ProductoRepository productoRepository;
 
-    @PostMapping("/boletas")
+    @PostMapping
     public ResponseEntity<Boleta> crearBoleta(@RequestBody BoletaRequest request) {
-        // Obtener productos reales por ID
         List<Producto> productos = productoRepository.findAllById(request.getProductos());
 
-        // Parsear fecha si quieres usar la del request, o usar fecha actual
         Date fecha = new Date();
-        if (request.getFecha() != null) {
+        if (request.getFecha() != null && !request.getFecha().isEmpty()) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                 fecha = sdf.parse(request.getFecha());
             } catch (Exception e) {
-                fecha = new Date(); // fallback
+                fecha = new Date(); 
             }
         }
 
