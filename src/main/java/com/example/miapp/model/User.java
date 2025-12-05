@@ -3,12 +3,11 @@ package com.example.miapp.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity 
-@Data 
-@AllArgsConstructor
+@Entity
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
-
 public class User {
 
     @Id
@@ -18,5 +17,5 @@ public class User {
     private String nombre;
     private String email;
     private String password;
+    private Boolean esAdmin = false;
 }
-
