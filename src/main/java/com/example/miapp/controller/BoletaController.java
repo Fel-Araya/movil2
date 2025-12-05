@@ -23,9 +23,9 @@ public class BoletaController {
     @Autowired
     private ProductoRepository productoRepository;
 
-    // Crear boleta
     @PostMapping
     public ResponseEntity<Boleta> crearBoleta(@RequestBody BoletaRequest request) {
+        // Obtener productos reales desde la BD por sus IDs
         List<Producto> productos = productoRepository.findAllById(request.getProductos());
 
         Date fecha = new Date();
@@ -44,13 +44,14 @@ public class BoletaController {
         boleta.setFecha(fecha);
 
         Boleta boletaGuardada = boletaRepository.save(boleta);
+
         return ResponseEntity.ok(boletaGuardada);
     }
 
-    // Obtener todas las boletas
-    @GetMapping
+     @GetMapping
     public ResponseEntity<List<Boleta>> listarBoletas() {
         List<Boleta> boletas = boletaRepository.findAll();
         return ResponseEntity.ok(boletas);
     }
 }
+
