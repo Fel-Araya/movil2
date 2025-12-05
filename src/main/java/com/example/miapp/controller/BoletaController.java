@@ -1,4 +1,4 @@
-package main.java.com.example.miapp.controller;
+package com.example.miapp.controller;
 
 import com.example.miapp.model.Boleta;
 import com.example.miapp.model.Producto;

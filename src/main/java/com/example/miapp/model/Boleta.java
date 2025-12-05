@@ -1,4 +1,4 @@
-package main.java.com.example.miapp.model;
+package com.example.miapp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
