@@ -1,0 +1,8 @@
+[build]
+builder = "maven"
+
+[build.args]
+GOOGLE_RUNTIME_VERSION = "17"
+
+[deploy]
+start = "java -jar target/*.jar"
