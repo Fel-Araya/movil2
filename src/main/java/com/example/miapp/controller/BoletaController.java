@@ -1,17 +1,20 @@
 package com.example.miapp.controller;
 
 import com.example.miapp.model.Boleta;
+import com.example.miapp.model.BoletaRequest;
 import com.example.miapp.model.Producto;
 import com.example.miapp.repository.BoletaRepository;
 import com.example.miapp.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/boletas")
-@CrossOrigin(origins = "*")
 public class BoletaController {
 
     @Autowired
@@ -20,24 +23,29 @@ public class BoletaController {
     @Autowired
     private ProductoRepository productoRepository;
 
-    // Crear boleta con lista de IDs de productos
-    @PostMapping
-    public Boleta crearBoleta(@RequestBody List<Long> productoIds) {
-        List<Producto> productos = productoRepository.findAllById(productoIds);
-        Boleta boleta = new Boleta(productos);
-        return boletaRepository.save(boleta);
-    }
+    @PostMapping("/boletas")
+    public ResponseEntity<Boleta> crearBoleta(@RequestBody BoletaRequest request) {
+        // Obtener productos reales por ID
+        List<Producto> productos = productoRepository.findAllById(request.getProductos());
 
-    // Listar todas las boletas
-    @GetMapping
-    public List<Boleta> listarBoletas() {
-        return boletaRepository.findAll();
-    }
+        // Parsear fecha si quieres usar la del request, o usar fecha actual
+        Date fecha = new Date();
+        if (request.getFecha() != null) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                fecha = sdf.parse(request.getFecha());
+            } catch (Exception e) {
+                fecha = new Date(); // fallback
+            }
+        }
 
-    // Obtener boleta por ID
-    @GetMapping("/{id}")
-    public Boleta obtenerBoleta(@PathVariable Long id) {
-        return boletaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Boleta no encontrada"));
+        Boleta boleta = new Boleta();
+        boleta.setProductos(productos);
+        boleta.setTotal(request.getTotal());
+        boleta.setFecha(fecha);
+
+        boletaRepository.save(boleta);
+
+        return ResponseEntity.ok(boleta);
     }
 }
