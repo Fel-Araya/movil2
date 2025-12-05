@@ -23,33 +23,34 @@ public class BoletaController {
     @Autowired
     private ProductoRepository productoRepository;
 
+    // Crear boleta
     @PostMapping
     public ResponseEntity<Boleta> crearBoleta(@RequestBody BoletaRequest request) {
-
-        // 1. Obtener productos reales desde la BD por sus IDs
         List<Producto> productos = productoRepository.findAllById(request.getProductos());
 
-        // 2. Parsear fecha si viene en el request, sino usar la actual
         Date fecha = new Date();
         if (request.getFecha() != null && !request.getFecha().isEmpty()) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                 fecha = sdf.parse(request.getFecha());
             } catch (Exception e) {
-                fecha = new Date(); // fallback si parsing falla
+                fecha = new Date(); 
             }
         }
 
-        // 3. Crear la boleta
         Boleta boleta = new Boleta();
         boleta.setProductos(productos);
         boleta.setTotal(request.getTotal());
         boleta.setFecha(fecha);
 
-        // 4. Guardar en BD
         Boleta boletaGuardada = boletaRepository.save(boleta);
-
-        // 5. Retornar boleta creada
         return ResponseEntity.ok(boletaGuardada);
+    }
+
+    // Obtener todas las boletas
+    @GetMapping
+    public ResponseEntity<List<Boleta>> listarBoletas() {
+        List<Boleta> boletas = boletaRepository.findAll();
+        return ResponseEntity.ok(boletas);
     }
 }
