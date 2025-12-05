@@ -18,10 +18,5 @@ public class User {
     private String nombre;
     private String email;
     private String password;
-
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Carrito carrito;
-
 }
 
