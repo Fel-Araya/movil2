@@ -4,9 +4,8 @@ RUN apk add --no-cache bash
 
 WORKDIR /app
 
-# Copia los archivos de Gradle y el wrapper
-COPY build.gradle settings.gradle gradlew ./
-COPY gradle ./gradle
+# Copia gradlew y los archivos de Gradle
+COPY gradlew build.gradle settings.gradle ./
 RUN chmod +x gradlew
 
 # Descarga dependencias (cacheable)
